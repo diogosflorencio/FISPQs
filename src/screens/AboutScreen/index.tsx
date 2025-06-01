@@ -1,84 +1,165 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Text, Divider, Card } from 'react-native-paper';
+import { View, ScrollView, StyleSheet, Linking } from 'react-native';
+import { Text } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const APP_VERSION = '1.0.0';
+export const AboutScreen: React.FC = () => {
+  const handleEmailPress = () => {
+    Linking.openURL('mailto:diogosflorencio@gmail.com');
+  };
 
-const AboutScreen: React.FC = () => {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Text variant="headlineMedium" style={styles.title}>Sobre o App</Text>
-          <Text style={styles.subtitle}>Desenvolvido por Diogo para Natalia =)</Text>
-          <Divider style={styles.divider} />
-          <Text style={styles.version}>Versão: {APP_VERSION}</Text>
-        </Card.Content>
-      </Card>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>Como usar o aplicativo:</Text>
-          <Text style={styles.tutorial}>
-            1. Toque em "Baixar" para salvar um PDF do servidor no seu dispositivo. {'\n'}
-            2. PDFs baixados ficam disponíveis mesmo offline. {'\n'}
-            3. Use a barra de busca para encontrar rapidamente uma FISPQ pelo nome. {'\n'}
-            4. Toque em um PDF baixado para visualizar seu conteúdo. {'\n'}
-            5. Use os filtros para ver todos, apenas baixados ou apenas disponíveis para download. {'\n'}
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Icon name="info" size={50} color="#004000" />
+        <Text style={styles.headerTitle}>FISPQs - Meio Ambiente</Text>
+        <Text style={styles.version}>Versão 1.1.0</Text>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Histórico de Versões</Text>
+        
+        {/* Versão Atual */}
+        <View style={styles.versionBlock}>
+          <Text style={styles.versionTitle}>
+            <Icon name="new-releases" size={20} color="#004000" /> Versão 1.1.0
           </Text>
-          <Divider style={styles.divider} />
-          <Text style={styles.sectionTitle}>Funcionamento:</Text>
-          <Text style={styles.tutorial}>
-            - O app conecta ao Supabase Storage para listar e baixar FISPQs. {'\n'}
-            - PDFs baixados ficam salvos localmente e podem ser acessados offline. {'\n'}
-            - Você pode atualizar a lista puxando para baixo (pull-to-refresh). {'\n'}
+          <Text style={styles.versionDate}>Lançamento: Março/2024</Text>
+          <Text style={styles.versionText}>
+            Adições:{'\n'}
+            • Navegação entre páginas com Bottom Tab Navigation{'\n'}
+            • Nova tela de Tutorial com guia completo de uso{'\n'}
+            • Tela Sobre com histórico de versões{'\n'}
+            • Paginação na visualização de PDFs{'\n'}
+            • Remoção automática da extensão ".pdf" nos títulos{'\n'}
+            • Melhorias na interface do usuário{'\n'}
+            • Otimização no sistema de cache
           </Text>
-        </Card.Content>
-      </Card>
+          <Text style={styles.versionDetails}>
+            Detalhes técnicos:{'\n'}
+            • Implementação do React Navigation 6.x{'\n'}
+            • Refatoração da estrutura de componentes{'\n'}
+            • Organização em módulos independentes{'\n'}
+            • Melhorias na gestão de estado
+          </Text>
+        </View>
+
+        {/* Versão Inicial */}
+        <View style={styles.versionBlock}>
+          <Text style={styles.versionTitle}>
+            <Icon name="history" size={20} color="#004000" /> Versão 1.0.0-natalia
+          </Text>
+          <Text style={styles.versionDate}>Lançamento: Janeiro/2024</Text>
+          <Text style={styles.versionText}>
+            Concepção inicial do projeto, idealizado por Natalia:{'\n'}
+            • Listagem básica de FISPQs{'\n'}
+            • Visualização de documentos PDF{'\n'}
+            • Sistema de download para uso offline{'\n'}
+            • Busca por nome de arquivo{'\n'}
+            • Indicador de disponibilidade offline
+          </Text>
+          <Text style={styles.versionDetails}>
+            Detalhes técnicos:{'\n'}
+            • Integração com Firebase Storage{'\n'}
+            • Sistema de cache local{'\n'}
+            • Gestão de estado com React Hooks{'\n'}
+            • Implementação do react-native-pdf
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>
+          Desenvolvido por Diogo Florêncio
+        </Text>
+        <Text style={styles.email} onPress={handleEmailPress}>
+          diogosflorencio@gmail.com
+        </Text>
+      </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  header: {
+    alignItems: 'center',
     padding: 24,
-    backgroundColor: '#F6F7FB',
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
   },
-  card: {
-    marginBottom: 24,
-    borderRadius: 16,
-    elevation: 3,
-    backgroundColor: '#fff',
-    padding: 8,
-  },
-  title: {
-    color: '#6C47FF',
+  headerTitle: {
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    opacity: 0.7,
-    marginBottom: 8,
+    color: '#004000',
+    marginTop: 12,
   },
   version: {
-    fontSize: 13,
-    color: '#222',
-    marginTop: 8,
-    marginBottom: 4,
+    fontSize: 16,
+    color: '#666',
+    marginTop: 4,
+  },
+  section: {
+    padding: 16,
   },
   sectionTitle: {
-    color: '#6C47FF',
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 6,
+    color: '#004000',
+    marginBottom: 16,
   },
-  tutorial: {
-    fontSize: 15,
-    color: '#222',
-    marginBottom: 8,
+  versionBlock: {
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 2,
   },
-  divider: {
-    marginVertical: 10,
+  versionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#004000',
+    marginBottom: 4,
   },
-});
-
-export default AboutScreen;
+  versionDate: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 12,
+    fontStyle: 'italic',
+  },
+  versionText: {
+    fontSize: 14,
+    color: '#333',
+    lineHeight: 22,
+    marginBottom: 12,
+  },
+  versionDetails: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 22,
+    backgroundColor: '#F8F8F8',
+    padding: 12,
+    borderRadius: 6,
+  },
+  footer: {
+    padding: 24,
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+  },
+  footerText: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  email: {
+    fontSize: 14,
+    color: '#004000',
+    textDecorationLine: 'underline',
+  },
+}); 

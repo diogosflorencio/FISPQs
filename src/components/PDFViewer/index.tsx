@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Dimensions, ActivityIndicator, Text, BackHandler } from 'react-native';
 import Pdf from 'react-native-pdf';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigation/types';
+import type { RootStackParamList } from '../../navigation/types';
 import RNFS from 'react-native-fs';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PdfViewer'>;
@@ -63,7 +63,7 @@ export const PdfViewer: React.FC<Props> = ({ route, navigation }) => {
             onPageChanged={(page, numberOfPages) => {
               console.log(`Página atual: ${page}/${numberOfPages}`);
               setCurrentPage(page);
-              //setTotalPages(numberOfPages); // adiciona o total de páginas
+              setTotalPages(numberOfPages); // adiciona o total de páginas
             }}
             onError={(error) => {
               console.error('Erro ao carregar PDF:', error);
@@ -93,7 +93,7 @@ export const PdfViewer: React.FC<Props> = ({ route, navigation }) => {
           {!error && (
             <View style={styles.pageInfo}>
               <Text style={styles.pageText}>
-                Página {currentPage} de {totalPages} (em desenvolvimento)
+                Página {currentPage} de {totalPages}
               </Text>
             </View>
           )}
