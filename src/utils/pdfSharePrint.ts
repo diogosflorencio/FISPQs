@@ -1,12 +1,10 @@
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import RNPrint from 'react-native-print';
 
 export function toFsPath(localPath?: string | null): string | null {
-  if (!localPath) {
-    return null;
-  }
+  if (!localPath) return null;
   return localPath.replace(/^file:\/\//, '');
 }
 
@@ -16,13 +14,26 @@ function displayFilename(name: string): string {
 
 export async function sharePdfFile(displayName: string, localPath?: string | null): Promise<void> {
   const path = toFsPath(localPath);
+
   if (!path || !(await RNFS.exists(path))) {
     Alert.alert('Arquivo não encontrado', 'Baixe o FDS/FISPQ antes de compartilhar.');
     return;
   }
 
   const filename = displayFilename(displayName);
-  const fileUrl = `file://${path}`;
+
+  // Copia para CachesDirectoryPath — acessível por outros apps via FileProvider
+  const destPath = `${RNFS.CachesDirectoryPath}/${filename}`;
+
+  try {
+    await RNFS.copyFile(path, destPath);
+  } catch (copyErr) {
+    console.error('Erro ao copiar PDF para cache:', copyErr);
+    Alert.alert('Erro', 'Não foi possível preparar o arquivo para compartilhamento.');
+    return;
+  }
+
+  const fileUrl = `file://${destPath}`;
 
   try {
     await Share.open({
@@ -34,12 +45,15 @@ export async function sharePdfFile(displayName: string, localPath?: string | nul
     });
   } catch (err) {
     console.error('Erro ao compartilhar PDF:', err);
-    Alert.alert('Compartilhar', 'Não foi possível abrir o compartilhamento. Tente de novo.');
+    Alert.alert('Erro ao compartilhar', 'Não foi possível compartilhar o arquivo.');
+  } finally {
+    RNFS.unlink(destPath).catch(() => {});
   }
 }
 
 export async function printPdfFile(displayName: string, localPath?: string | null): Promise<void> {
   const path = toFsPath(localPath);
+
   if (!path || !(await RNFS.exists(path))) {
     Alert.alert('Arquivo não encontrado', 'Baixe o FDS/FISPQ antes de imprimir.');
     return;
