@@ -4,7 +4,6 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  RefreshControl,
   ActivityIndicator,
 } from 'react-native';
 import { Text, Searchbar } from 'react-native-paper';
@@ -14,6 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '../../navigation/types';
 import NetInfo from '@react-native-community/netinfo';
 import RNFS from 'react-native-fs';
+import { APP_COLORS } from '../../config/theme';
+import { printPdfFile, sharePdfFile } from '../../utils/pdfSharePrint';
 
 interface PdfFile {
   name: string;
@@ -27,7 +28,6 @@ export const PdfList: React.FC = () => {
   const [pdfs, setPdfs] = useState<PdfFile[]>([]);
   const [filteredPdfs, setFilteredPdfs] = useState<PdfFile[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState<string | null>(null);
   const [isOffline, setIsOffline] = useState(false);
@@ -37,8 +37,11 @@ export const PdfList: React.FC = () => {
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsOffline(!state.isConnected);
     });
-
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    loadPdfs();
   }, []);
 
   const loadPdfs = async () => {
@@ -53,65 +56,36 @@ export const PdfList: React.FC = () => {
     }
   };
 
-  const onRefresh = async () => {
-    if (isOffline) {
-      return;
-    }
-    setRefreshing(true);
-    try {
-      await PDFService.syncPdfs();
-      await loadPdfs();
-    } catch (error) {
-      console.error('Erro ao sincronizar PDFs:', error);
-    } finally {
-      setRefreshing(false);
-    }
-  };
-
   const openPdf = async (pdf: PdfFile) => {
     try {
       setDownloading(pdf.name);
-      
-      // Se já estiver baixado, tenta abrir diretamente
+
       if (pdf.isDownloaded && pdf.localPath) {
         const filePath = pdf.localPath.replace('file://', '');
         const exists = await RNFS.exists(filePath);
-        
+
         if (exists) {
-          console.log('Abrindo PDF local:', pdf.localPath);
-          navigation.navigate('PdfViewer', {
-            uri: pdf.localPath,
-            title: pdf.name
-          });
-          setDownloading(null);
+          navigation.navigate('PdfViewer', { uri: pdf.localPath, title: pdf.name });
           return;
         } else {
-          // Se o arquivo não existe mais, atualiza o status
           const updatedFiles = await PDFService.listPdfs();
           setPdfs(updatedFiles);
-          setFilteredPdfs(updatedFiles.filter(p => 
+          setFilteredPdfs(updatedFiles.filter(p =>
             p.name.toLowerCase().includes(searchQuery.toLowerCase())
           ));
           throw new Error('Arquivo local não encontrado');
         }
       }
 
-      // Se não estiver offline, tenta baixar
       if (!isOffline) {
         const localPath = await PDFService.downloadPdf(pdf);
-        
-        // Atualiza a lista de PDFs para refletir o novo download
         const updatedFiles = await PDFService.listPdfs();
         setPdfs(updatedFiles);
-        setFilteredPdfs(updatedFiles.filter(p => 
+        setFilteredPdfs(updatedFiles.filter(p =>
           p.name.toLowerCase().includes(searchQuery.toLowerCase())
         ));
-
         if (localPath) {
-          navigation.navigate('PdfViewer', {
-            uri: localPath,
-            title: pdf.name
-          });
+          navigation.navigate('PdfViewer', { uri: localPath, title: pdf.name });
         }
       }
     } catch (error) {
@@ -121,22 +95,25 @@ export const PdfList: React.FC = () => {
     }
   };
 
-  const onChangeSearch = (query: string) => {
-    setSearchQuery(query);
-    const filtered = pdfs.filter(pdf => 
-      pdf.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredPdfs(filtered);
+  const sharePdf = (pdf: PdfFile) => {
+    void sharePdfFile(pdf.name, pdf.localPath);
   };
 
-  useEffect(() => {
-    loadPdfs();
-  }, []);
+  const printPdf = (pdf: PdfFile) => {
+    void printPdfFile(pdf.name, pdf.localPath);
+  };
+
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    setFilteredPdfs(pdfs.filter(pdf =>
+      pdf.name.toLowerCase().includes(query.toLowerCase())
+    ));
+  };
 
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#6C47FF" />
+        <ActivityIndicator size="large" color={APP_COLORS.secondary} />
       </View>
     );
   }
@@ -145,77 +122,89 @@ export const PdfList: React.FC = () => {
     <View style={styles.container}>
       {isOffline && (
         <View style={styles.offlineBanner}>
-          <Icon name="cloud-off" size={20} color="#fff" />
-          <Text style={styles.offlineText}>Modo Offline - Você está sem internet. Os FISPQs baixados estão disponíveis.</Text>
+          <Icon name="cloud-off" size={18} color={APP_COLORS.primaryTextOnPrimary} />
+          <Text style={styles.offlineText}>
+            Modo Offline, só os FDS baixados estão disponíveis.
+          </Text>
         </View>
       )}
+
       <Searchbar
         placeholder="Busque por nome ou número..."
         onChangeText={onChangeSearch}
         value={searchQuery}
         style={styles.searchBar}
-        iconColor="#6C47FF"
+        iconColor={APP_COLORS.secondary}
       />
+
       <FlatList
         data={filteredPdfs}
         keyExtractor={(item) => item.name}
-        refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={onRefresh}
-            colors={['#6C47FF']}
-            enabled={!isOffline}
-          />
-        }
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.item,
-              (!item.isDownloaded && isOffline) && styles.itemDisabled
-            ]}
-            onPress={() => openPdf(item)}
-            disabled={!item.isDownloaded && isOffline}
-          >
-            <Icon name="picture-as-pdf" size={24} color="#6C47FF" />
-            <View style={styles.textContainer}>
-              <Text style={[
-                styles.title,
-                (!item.isDownloaded && isOffline) && styles.textDisabled
-              ]}>{item.name}</Text>
-              {item.isDownloaded && (
-                <Text style={styles.downloadedText}>
-                  <Icon name="check-circle" size={14} color="#4CAF50" /> Está FISPQ está disponível offline
+        renderItem={({ item }) => {
+          const disabled = !item.isDownloaded && isOffline;
+          const isDownloading = downloading === item.name;
+
+          return (
+            <TouchableOpacity
+              style={[styles.card, disabled && styles.cardDisabled]}
+              onPress={() => openPdf(item)}
+              disabled={disabled}
+              activeOpacity={0.85}
+            >
+              {/* Linha 1: ícone | título | ícone impressora ou download */}
+              <View style={styles.row1}>
+                <Icon
+                  name="picture-as-pdf"
+                  size={24}
+                  color={item.isDownloaded ? APP_COLORS.secondary : APP_COLORS.textDisabled}
+                />
+                <Text style={[styles.title, disabled && styles.titleDisabled]} numberOfLines={2}>
+                  {item.name.replace('.pdf', '')}
                 </Text>
+                {isDownloading ? (
+                  <ActivityIndicator size="small" color={APP_COLORS.secondary} />
+                ) : item.isDownloaded ? (
+                  <TouchableOpacity
+                    onPress={() => printPdf(item)}
+                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                  >
+                    <Icon name="print" size={22} color={APP_COLORS.secondary} />
+                  </TouchableOpacity>
+                ) : (
+                  <Icon name="download" size={22} color={APP_COLORS.secondary} />
+                )}
+              </View>
+
+              {/* Linha 2: só aparece se já estiver baixado */}
+              {item.isDownloaded && (
+                <View style={styles.row2}>
+                  <TouchableOpacity style={styles.btnCompartilhar} onPress={() => sharePdf(item)}>
+                    <Text style={styles.btnCompartilharText}>Enviar</Text>
+                  </TouchableOpacity>
+
+                  <View style={styles.offlineTag}>
+                    <Icon name="check-circle" size={13} color={APP_COLORS.success} />
+                    <Text style={styles.offlineTagText}>FDS/FISPQ disponível offline</Text>
+                  </View>
+
+                  <TouchableOpacity style={styles.btnImprimir} onPress={() => printPdf(item)}>
+                    <Text style={styles.btnImprimirText}>Imprimir</Text>
+                  </TouchableOpacity>
+                </View>
               )}
-            </View>
-            {downloading === item.name ? (
-              <ActivityIndicator size="small" color="#6C47FF" />
-            ) : (
-              <Icon 
-                name={item.isDownloaded ? "check" : "download"} 
-                size={24} 
-                color={item.isDownloaded ? "#4CAF50" : "#6C47FF"} 
-              />
-            )}
-          </TouchableOpacity>
-          
-        )}
+            </TouchableOpacity>
+          );
+        }}
         ListEmptyComponent={
           <View style={styles.centerContainer}>
             <Text style={styles.emptyText}>
-              {searchQuery ? 'Nenhum PDF encontrado nessa pesquisa' : 'Nenhum PDF encontrado. Verifique sua conexão com a internet ou contate o desenvolvedor (diogosflorencio@gmail.com).'}
+              {searchQuery
+                ? 'Nenhum PDF encontrado nessa pesquisa.'
+                : 'Nenhum PDF encontrado. Verifique sua conexão ou contate o desenvolvedor.'}
             </Text>
           </View>
         }
       />
-      {/* <Text style={{
-        fontSize: 12,
-        color: '#666',
-        textAlign: 'center',
-        marginBottom: 15
-      }}>
-        Versão beta 1.1.0-paginas
-      </Text> */}
     </View>
   );
 };
@@ -223,63 +212,116 @@ export const PdfList: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  searchBar: {
-    margin: 16,
-    elevation: 4,
-    backgroundColor: '#FFF',
-    borderRadius: 10,
+    backgroundColor: APP_COLORS.background,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 24,
   },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 8,
+  searchBar: {
+    margin: 16,
+    elevation: 4,
+    backgroundColor: APP_COLORS.surface,
     borderRadius: 10,
-    elevation: 2,
-  },
-  itemDisabled: {
-    opacity: 0.5,
-  },
-  textContainer: {
-    flex: 1,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 16,
-    color: '#333',
-  },
-  downloadedText: {
-    fontSize: 12,
-    color: '#4CAF50',
-    marginTop: 4,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
   },
   offlineBanner: {
-    backgroundColor: '#FF9800',
-    padding: 8,
+    backgroundColor: APP_COLORS.warning,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  offlineText: {
+    color: APP_COLORS.primaryTextOnPrimary,
+    fontSize: 13,
+    flex: 1,
+  },
+
+  // Card
+  card: {
+    backgroundColor: APP_COLORS.surface,
+    borderRadius: 1,
+    marginHorizontal: 5,
+    marginBottom: 5,
+    elevation: 3,
+    overflow: 'hidden',
+  },
+  cardDisabled: {
+    opacity: 0.5,
+  },
+
+  // Linha 1
+  row1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    gap: 12,
+  },
+  title: {
+    flex: 1,
+    fontSize: 15,
+    color: APP_COLORS.textPrimary,
+  },
+  titleDisabled: {
+    color: APP_COLORS.textDisabled,
+  },
+
+  // Linha 2
+  row2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderTopWidth: 0.5,
+    borderTopColor: APP_COLORS.divider,
+  },
+  btnCompartilhar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderRightWidth: 0.5,
+    borderRightColor: APP_COLORS.divider,
+  },
+  btnCompartilharText: {
+    fontSize: 13,
+    color: APP_COLORS.secondary,
+    fontWeight: '500',
+  },
+  offlineTag: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 4,
+    paddingVertical: 9,
+    paddingHorizontal: 4,
   },
-  offlineText: {
-    color: '#fff',
-    marginLeft: 8,
-    fontSize: 14,
+  offlineTagText: {
+    fontSize: 11,
+    color: APP_COLORS.success,
+    flexShrink: 1,
   },
-  textDisabled: {
-    color: '#999',
+  btnImprimir: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderLeftWidth: 0.5,
+    borderLeftColor: APP_COLORS.divider,
   },
-}); 
+  btnImprimirText: {
+    fontSize: 13,
+    color: APP_COLORS.secondary,
+    fontWeight: '500',
+  },
+  emptyText: {
+    fontSize: 15,
+    color: APP_COLORS.textSecondary,
+    textAlign: 'center',
+  },
+});

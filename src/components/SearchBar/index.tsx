@@ -1,6 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Searchbar } from 'react-native-paper';
+import { APP_COLORS } from '../../config/theme';
 
 type SearchBarProps = {
   onSearch: (query: string) => void;
@@ -26,16 +27,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
 const styles = StyleSheet.create({
   searchBar: {
-    margin: 16,
-    elevation: 4,
-    borderRadius: 16,
-    backgroundColor: '#fff',
-    shadowColor: '#6C47FF',
+    margin: 5,
+    elevation: 5,
+    borderRadius: 1,
+    backgroundColor: APP_COLORS.surface,
+    shadowColor: APP_COLORS.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: APP_COLORS.border,
   },
 });
 

@@ -4,6 +4,7 @@ import Pdf from 'react-native-pdf';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
 import RNFS from 'react-native-fs';
+import { APP_COLORS } from '../../config/theme';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PdfViewer'>;
 
@@ -86,17 +87,17 @@ export const PdfViewer: React.FC<Props> = ({ route, navigation }) => {
           />
           {/* {isLoading && (
             <View style={styles.loading}>
-              <ActivityIndicator size="large" color="#6C47FF" />
+              <ActivityIndicator size="large" color={APP_COLORS.secondary} />
               <Text style={styles.loadingText}>Carregando PDF...</Text>
             </View>
           )} */}
-          {!error && (
+          {/* {!error && (
             <View style={styles.pageInfo}>
               <Text style={styles.pageText}>
                 Página {currentPage} de {totalPages}
               </Text>
             </View>
-          )}
+          )} */}
         </>
       )}
     </View>
@@ -106,22 +107,22 @@ export const PdfViewer: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#181A20',
+    backgroundColor: APP_COLORS.viewerBackground,
   },
   pdf: {
     flex: 1,
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
-    backgroundColor: '#ffff',
+    backgroundColor: APP_COLORS.pdfPageBackground,
   },
   loading: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(24, 26, 32, 0.7)',
+    backgroundColor: APP_COLORS.overlayScrim,
   },
   loadingText: {
-    color: '#fff',
+    color: APP_COLORS.primaryTextOnPrimary,
     marginTop: 10,
     fontSize: 16,
   },
@@ -132,12 +133,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   errorText: {
-    color: '#fff',
+    color: APP_COLORS.primaryTextOnPrimary,
     fontSize: 18,
     marginBottom: 10,
   },
   errorMessage: {
-    color: '#ff4444',
+    color: APP_COLORS.errorBright,
     fontSize: 16,
     textAlign: 'center',
   },
@@ -147,11 +148,11 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.62)',
+    backgroundColor: APP_COLORS.overlayFooter,
     paddingVertical: 8,
   },
   pageText: {
-    color: '#fff',
+    color: APP_COLORS.primaryTextOnPrimary,
     fontSize: 14,
   },
 }); 

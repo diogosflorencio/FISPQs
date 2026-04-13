@@ -3,9 +3,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PdfList } from '../components/PDFList/index';
 import { PdfViewer } from '../components/PDFViewer';
-import { AboutScreen } from '../screens/AboutScreen';
+import { VersionScreen } from '../screens/VersionScreen';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TutorialScreen } from '../screens/TutorialScreen';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { APP_COLORS } from '../config/theme';
 
 
 const Stack = createNativeStackNavigator();
@@ -18,11 +20,11 @@ const HomeStack = () => {
         name="PdfList" 
         component={PdfList}
         options={{ 
-          title: 'FISPQs - Meio Ambiente',
+          title: 'FDS/FISPQs - Meio Ambiente',
           headerStyle: {
-            backgroundColor: '#004000',
+            backgroundColor: APP_COLORS.primary,
           },
-          headerTintColor: '#fff',
+          headerTintColor: APP_COLORS.primaryTextOnPrimary,
           headerTitleStyle: {
             fontWeight: 'bold',
           },
@@ -30,13 +32,13 @@ const HomeStack = () => {
       />
       <Stack.Screen 
         name="PdfViewer" 
-        component={PdfViewer}
+        component={PdfViewer as any} 
         options={({ route }) => ({ 
-          title: route.params?.title || 'Visualizador',
+          title: (route.params as { title?: string })?.title || 'Visualizador',
           headerStyle: {
-            backgroundColor: '#004000',
+            backgroundColor: APP_COLORS.primary,
           },
-          headerTintColor: '#fff',
+          headerTintColor: APP_COLORS.primaryTextOnPrimary,
         })}
       />
     </Stack.Navigator>
@@ -44,16 +46,18 @@ const HomeStack = () => {
 };
 
 export const AppNavigator = () => {
+  const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: '#004000',
-        tabBarInactiveTintColor: '#666',
+        tabBarActiveTintColor: APP_COLORS.primary,
+        tabBarInactiveTintColor: APP_COLORS.tabBarInactive,
         tabBarStyle: {
-          paddingBottom: 5,
-          height: 60,
+          paddingBottom: Math.max(5, insets.bottom),
+          height: 60 + insets.bottom,
         },
         headerShown: false,
+        tabBarHideOnKeyboard: true,
       }}
     >
       <Tab.Screen
@@ -70,19 +74,19 @@ export const AppNavigator = () => {
         name="Tutorial"
         component={TutorialScreen}
         options={{
-          tabBarLabel: 'Tutorial',
+          tabBarLabel: 'Sobre',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="help" size={size} color={color} />
+            <Icon name="info" size={size} color={color} />
           ),
         }}
       />
       <Tab.Screen
         name="About"
-        component={AboutScreen}
+        component={VersionScreen}
         options={{
-          tabBarLabel: 'Sobre',
+          tabBarLabel: 'Versões',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="info" size={size} color={color} />
+            <Icon name="history" size={size} color={color} />
           ),
         }}
       />
