@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TutorialScreen } from '../screens/TutorialScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { APP_COLORS } from '../config/theme';
+import { PdfListScreenHeader } from './PdfListScreenHeader';
 
 
 const Stack = createNativeStackNavigator();
@@ -16,18 +17,12 @@ const Tab = createBottomTabNavigator();
 const HomeStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen 
-        name="PdfList" 
+      <Stack.Screen
+        name="PdfList"
         component={PdfList}
-        options={{ 
-          title: 'FDS/FISPQs - Meio Ambiente',
-          headerStyle: {
-            backgroundColor: APP_COLORS.primary,
-          },
-          headerTintColor: APP_COLORS.primaryTextOnPrimary,
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
+        options={{
+          
+          header: () => <PdfListScreenHeader />,
         }}
       />
       <Stack.Screen 
