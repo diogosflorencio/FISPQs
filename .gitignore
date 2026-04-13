@@ -7,7 +7,7 @@ node_modules/
 
 # Supabase
 supabase/
-
+supabase.ts
 # React Native
 .expo/
 dist/
