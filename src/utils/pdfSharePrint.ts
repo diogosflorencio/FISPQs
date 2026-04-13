@@ -1,7 +1,10 @@
-import { Alert, Platform } from 'react-native';
+import { Alert } from 'react-native';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import RNPrint from 'react-native-print';
+
+const PDF_SHARE_PROMO_MESSAGE =
+  'Baixe o aplicativo de FDS/FISPQs em https://play.google.com/store/apps/details?id=com.fispqs (por enquanto somente para android)';
 
 export function toFsPath(localPath?: string | null): string | null {
   if (!localPath) return null;
@@ -38,6 +41,7 @@ export async function sharePdfFile(displayName: string, localPath?: string | nul
   try {
     await Share.open({
       title: filename,
+      message: PDF_SHARE_PROMO_MESSAGE,
       url: fileUrl,
       type: 'application/pdf',
       filename,

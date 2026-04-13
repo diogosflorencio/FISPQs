@@ -44,6 +44,10 @@ const versions = [
       'Adição de função de compartilhamento de PDF',
       'Melhorias na interface de visualização de todas as telas',
     ],
+    tech: [
+      'Uso do React Native Share para compartilhamento de PDF',
+      'Uso do React Native Print para impressão de PDF',
+    ],
   },
   {
     version: '1.1.2 - segurança',
