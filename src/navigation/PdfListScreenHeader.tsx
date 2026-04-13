@@ -67,14 +67,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 12,
     borderRadius: 10,
-    backgroundColor: 'rgba(255, 235, 59, 0.22)',
+    backgroundColor: 'rgba(255, 59, 59, 0.22)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255, 235, 59, 0.55)',
+    borderColor: 'rgba(230, 143, 14, 0.55)',
   },
   noticeText: {
     color: '#FFFDE7',
-    fontSize: 14,
+    fontSize: 12,
     lineHeight: 20,
-    fontWeight: '600',
+    fontWeight: '400',
   },
 });
