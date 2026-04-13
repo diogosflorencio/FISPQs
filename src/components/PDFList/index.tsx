@@ -221,10 +221,10 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   searchBar: {
-    margin: 16,
+    margin: 5,
     elevation: 4,
     backgroundColor: APP_COLORS.surface,
-    borderRadius: 10,
+    borderRadius: 1,
   },
   offlineBanner: {
     backgroundColor: APP_COLORS.warning,

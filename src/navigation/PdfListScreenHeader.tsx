@@ -32,7 +32,7 @@ export const PdfListScreenHeader: React.FC = () => {
 const styles = StyleSheet.create({
   wrap: {
     backgroundColor: APP_COLORS.primary,
-    paddingHorizontal: 16,
+    paddingHorizontal: 5,
     paddingBottom: 16,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(255,255,255,0.2)',
@@ -58,21 +58,22 @@ const styles = StyleSheet.create({
     opacity: 0.95,
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderRadius: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.14)',
     overflow: 'hidden',
   },
   notice: {
     marginTop: 12,
     paddingVertical: 12,
     paddingHorizontal: 12,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 59, 59, 0.22)',
+    borderRadius: 1,
+    backgroundColor: 'rgb(255, 255, 255)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(230, 143, 14, 0.55)',
+    borderColor: 'rgb(0, 0, 0)',
+   
   },
   noticeText: {
-    color: '#FFFDE7',
+    color: 'rgb(0, 0, 0)',
     fontSize: 12,
     lineHeight: 20,
     fontWeight: '400',

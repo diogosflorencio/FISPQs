@@ -81,8 +81,8 @@ android {
         applicationId "com.fispqs"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "1.1.3 - impressão e compartilhamento"
+        versionCode 8
+        versionName "1.2.0 - avisos e feedbacks"
 
         externalNativeBuild {
             cmake {

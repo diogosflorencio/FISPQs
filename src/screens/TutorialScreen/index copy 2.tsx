@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
   cardIconWrap: {
     width: 40,
     height: 40,
-    borderRadius: 10,
+    borderRadius: 1,
     backgroundColor: '#E6F1FB',
     alignItems: 'center',
     justifyContent: 'center',

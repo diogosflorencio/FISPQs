@@ -69,6 +69,18 @@ const SECTIONS: SectionItem[] = [
       'Dúvidas? diogosflorencio@gmail.com, qualquer hora',
     ],
   },
+  {
+    icon: 'policy',
+    title: 'Termos de uso e Política de Privacidade',
+    bullets: [
+      'Este aplicativo é desenvolvido de forma independente, sem vínculo com nenhuma empresa, com o objetivo de colaborar com a segurança de todos. O desenvolvedor não se responsabiliza pelo conteúdo dos avisos, feedbacks ou pelos arquivos de FISPQs/FDS disponibilizados, nem pela integridade, disponibilidade ou segurança dos dados armazenados.',
+      'Todos os dados são armazenados em um banco de dados em nuvem no plano gratuito (dada natureza sem fins lucrativos da aplicação). Todos os recursos de segurança disponíveis e aplicáveis ao projeto foram implementados.',
+      'Recursos de segurança implementados:\n• HTTPS em todas as chamadas ao DB (API, Storage e PostgREST)\n• Chave anônima (JWT) com acesso restrito pelas políticas do DB\n• Row Level Security (RLS) no PostgreSQL: comentários visíveis apenas quando aprovados; inserção somente com status pendente de moderação\n• Função security definer para curtidas, sem update direto pelo cliente\n• Restrições no banco (check, limite de tamanho de texto, coracoes >= 0)\n• Trigger para normalizar nomes exibidos e gerar nomes anônimos sequenciais\n• Sanitização de texto (sanitizePlainText) contra XSS: remove tags, javascript:, data:, com limites de tamanho no app e no banco\n• Avisos: leitura apenas de registros ativos via RLS; escrita exclusiva pelo backend/SQL\n• PDFs armazenados em diretórios isolados do aplicativo (documentos/cache); metadados em AsyncStorage com isolamento nativo do sistema operacional\n• usesCleartextTraffic ativo apenas no manifest de debug, tráfego HTTP claro desabilitado no build de produção',
+      'Tecnologias utilizadas: React Native, TypeScript, DB em nuvem (PostgreSQL, RLS, RPC, Storage), react-native-fs, AsyncStorage, NetInfo e react-native-share.',
+      'Nota: a ficha da loja pode listar recursos como LGPD e criptografia local como promessas de produto. O que está descrito acima representa o que está efetivamente implementado no código-fonte e no SQL do projeto.',
+      'No mais, bom trabalho com segurança pra todos! E avalia o app, pow, custa nada e até agora (quase um ano depois, com 400 usuários) ninguém fez a boa. Valeu! =)'
+    ],
+  },
 ];
 
 export const TutorialScreen: React.FC = () => {
@@ -186,7 +198,7 @@ export const TutorialScreen: React.FC = () => {
         {/* ── VERSION BADGE ── */}
         <View style={styles.versionBadge}>
           <Icon name="verified" size={14} color={APP_COLORS.textSecondary} />
-          <Text style={styles.versionText}>Versão 1.1.2 - segurança</Text>
+          <Text style={styles.versionText}>Versão 1.2.0 - avisos e feedbacks</Text>
         </View>
 
       </ScrollView>

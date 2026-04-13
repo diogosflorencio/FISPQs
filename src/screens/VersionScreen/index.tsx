@@ -35,10 +35,23 @@ const versions = [
     note: 'Esta versão tornará as anteriores incompatíveis devido às mudanças estruturais no banco de dados.',
   },
   {
-    version: '1.1.3 - impressão e compartilhamento',
+    version: '1.2.0 - avisos e feedbacks',
     date: 'Abril/2026',
     badge: 'Atual',
     badgeStyle: 'current' as const,
+    changes: [
+      'Adição de tela de feedbacks',
+      'Adição de tela de avisos',
+      'resposta de feedbacks',
+      'votos em feedbacks/comentários',
+    ],
+    tech: [
+      'DB armazena e gerencia avisos e feedbacks, respostas e votos',
+    ],
+  },
+  {
+    version: '1.1.0 - impressão e compartilhamento',
+    date: 'Abril/2026',
     changes: [
       'Adição de função de impressão de PDF',
       'Adição de função de compartilhamento de PDF',
@@ -50,7 +63,7 @@ const versions = [
     ],
   },
   {
-    version: '1.1.2 - segurança',
+    version: '1.0.1 - segurança',
     date: 'Outubro/2025',
     changes: [
       'Atualização de segurança exigida pelo Google (páginas de 16 KB)',
@@ -63,7 +76,7 @@ const versions = [
     ],
   },
   {
-    version: '1.1.1 - lançamento ao público',
+    version: '1.0.0 - lançamento ao público',
     date: 'Junho/2025',
     changes: [
       'Ajustes finais de interface e UX',
@@ -73,7 +86,7 @@ const versions = [
     tech: ['Polimento final da interface', 'Correções de bugs menores'],
   },
   {
-    version: '0.1.1 - páginas',
+    version: '0.1.0 - páginas',
     date: 'Junho/2025',
     changes: [
       'Bottom Tab Navigation',
@@ -115,7 +128,7 @@ export const VersionScreen: React.FC = () => {
         <View style={styles.header}>
         
           <Text style={styles.headerTitle}>FISPQs/FDS - Meio Ambiente</Text>
-          <Text style={styles.headerSub}>Versão 1.1.3 - impressão e compartilhamento</Text>
+          <Text style={styles.headerSub}>Versão 1.2.0 - avisos e feedbacks</Text> 
         </View>
 
         <Text style={styles.sectionLabel}>Versões </Text>
@@ -244,7 +257,7 @@ const styles = StyleSheet.create({
 
   badge: {
     paddingHorizontal: 8, paddingVertical: 3,
-    borderRadius: 20, marginRight: 4,
+    borderRadius: 1, marginRight: 4,
   },
   badgeCurrent: { backgroundColor: '#E6F1FB' },
   badgePaused: { backgroundColor: APP_COLORS.border },
@@ -274,16 +287,16 @@ const styles = StyleSheet.create({
   bodyTextMuted: { color: APP_COLORS.textMuted },
 
   noteBox: {
-    backgroundColor: APP_COLORS.surfaceWarningNote,
-    borderLeftWidth: 3, borderLeftColor: APP_COLORS.warningBorder,
+    backgroundColor: 'rgb(0, 0, 0)',
+   
     padding: 10, marginTop: 10,
   },
-  noteText: { fontSize: 11, color: APP_COLORS.warningText, fontStyle: 'italic', lineHeight: 17 },
+  noteText: { fontSize: 11, color: 'rgb(255, 255, 255)', fontStyle: 'italic', lineHeight: 17 },
 
   footer: {
     marginTop: 8, padding: 16,
     backgroundColor: APP_COLORS.surface,
-    borderRadius: 12, alignItems: 'center',
+    borderRadius: 1, alignItems: 'center',
     borderWidth: 0.5, borderColor: APP_COLORS.border,
   },
   footerName: { fontSize: 13, fontWeight: '500', color: APP_COLORS.textPrimary, marginBottom: 4 },

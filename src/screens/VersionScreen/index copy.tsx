@@ -16,7 +16,7 @@ export const VersionScreen: React.FC = () => {
       <View style={styles.header}>
         <Icon name="info" size={50} color={APP_COLORS.primary} />
         <Text style={styles.headerTitle}>FISPQs - Meio Ambiente</Text>
-        <Text style={styles.version}>Versão 1.1.2 - segurança</Text>
+        <Text style={styles.version}>Versão 1.2.0 - avisos e feedbacks</Text>
       </View>
 
       <View style={styles.section}>
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   versionBlock: {
     backgroundColor: APP_COLORS.surface,
-    borderRadius: 10,
+    borderRadius: 1,
     padding: 16,
     marginBottom: 16,
     elevation: 2,

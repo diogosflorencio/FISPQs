@@ -54,6 +54,25 @@ project.xcworkspace
 # Downloaded PDFs
 pdfs/
 
+# Supabase
+supabase/
+supabase.ts
+supabaseClient.ts
+supabase.js
+supabase.json
+supabase.config.js
+supabase.config.json
+supabase.config.js
+
+sql/
+supabase_feedbacks_e_avisos.sql
+supabase_feedbacks_e_avisos.sql.gz
+supabase_feedbacks_e_avisos.sql.gz.part
+supabase_feedbacks_e_avisos.sql.gz.part.1
+supabase_feedbacks_e_avisos.sql.gz.part.2
+supabase_feedbacks_e_avisos.sql.gz.part.3
+supabase_feedbacks_e_avisos.sql.gz.part.4
+supabase_feedbacks_e_avisos.sql.gz.part.5
 # Xcode
 #
 *.pbxuser

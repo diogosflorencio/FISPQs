@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   },
   section: {
     backgroundColor: APP_COLORS.surface,
-    borderRadius: 10,
+    borderRadius: 1,
     padding: 16,
     marginBottom: 16,
     elevation: 2,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   },
   alertContainer: {
     backgroundColor: APP_COLORS.warningSurface,
-    borderRadius: 10,
+    borderRadius: 1,
     padding: 16,
     marginBottom: 16,
     borderLeftWidth: 4,

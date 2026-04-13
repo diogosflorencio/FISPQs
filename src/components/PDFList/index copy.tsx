@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     margin: 16,
     elevation: 4,
     backgroundColor: '#FFF',
-    borderRadius: 10,
+    borderRadius: 1,
   },
   searchBarWithAlert: {
     marginTop: 0,
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginHorizontal: 16,
     marginBottom: 8,
-    borderRadius: 10,
+    borderRadius: 1,
     elevation: 2,
   },
   itemDisabled: {
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
   },
   alertContainer: {
     backgroundColor: '#FFF3CD',
-    borderRadius: 10,
+    borderRadius: 1,
     padding: 16,
     marginHorizontal: 16,
     marginTop: 16,

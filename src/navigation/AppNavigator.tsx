@@ -6,6 +6,8 @@ import { PdfViewer } from '../components/PDFViewer';
 import { VersionScreen } from '../screens/VersionScreen';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TutorialScreen } from '../screens/TutorialScreen';
+import { FeedbackScreen } from '../screens/FeedbackScreen';
+import { AvisosScreen } from '../screens/AvisosScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { APP_COLORS } from '../config/theme';
 import { PdfListScreenHeader } from './PdfListScreenHeader';
@@ -47,12 +49,25 @@ export const AppNavigator = () => {
       screenOptions={{
         tabBarActiveTintColor: APP_COLORS.primary,
         tabBarInactiveTintColor: APP_COLORS.tabBarInactive,
+   
+
         tabBarStyle: {
           paddingBottom: Math.max(5, insets.bottom),
           height: 60 + insets.bottom,
+          backgroundColor: 'rgb(255, 255, 255)',
+    
+          borderTopWidth: 1,
+          borderColor: APP_COLORS.primary,
+         
+    
         },
         headerShown: false,
         tabBarHideOnKeyboard: true,
+
+        tabBarItemStyle: {
+          borderRadius: 1,
+          overflow: 'visible',
+        },
       }}
     >
       <Tab.Screen
@@ -62,6 +77,26 @@ export const AppNavigator = () => {
           tabBarLabel: 'FISPQs',
           tabBarIcon: ({ color, size }) => (
             <Icon name="description" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Feedback"
+        component={FeedbackScreen}
+        options={{
+          tabBarLabel: 'Feedback',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="forum" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Avisos"
+        component={AvisosScreen}
+        options={{
+          tabBarLabel: 'Avisos',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="campaign" size={size} color={color} />
           ),
         }}
       />
@@ -76,10 +111,13 @@ export const AppNavigator = () => {
         }}
       />
       <Tab.Screen
+      
         name="About"
         component={VersionScreen}
+        
         options={{
           tabBarLabel: 'Versões',
+          
           tabBarIcon: ({ color, size }) => (
             <Icon name="history" size={size} color={color} />
           ),
