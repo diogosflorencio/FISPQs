@@ -1,5 +1,5 @@
 {
     "version": "1.2.0",
-    "mensagem": "Atualização: mural de avisos, tela de feedback, possibilidade de compartilhar e imprimir, bloco de aviso (este). Correções de bugs e performance. No futuro será postado na AppleStore.",
+    "mensagem": "Nova atualização vindo aí! Implementei os grupos de FDS, a possibilidade de favoritar e estou trabalhando na implementação de notificações",
     "status": "ok"
 }
