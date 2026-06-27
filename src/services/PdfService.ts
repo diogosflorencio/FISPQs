@@ -212,6 +212,39 @@ class PDFService {
     return `${RNFS.DocumentDirectoryPath}/pdfs/${filename}`;
   }
 
+  /** Lista todos os PDFs do bucket com paginação (Supabase limita ~100 por página). */
+  private async listRemotePdfEntries(): Promise<Array<{ name: string; created_at?: string; metadata?: Record<string, unknown> }>> {
+    const PAGE_SIZE = 100;
+    const all: Array<{ name: string; created_at?: string; metadata?: Record<string, unknown> }> = [];
+    let offset = 0;
+
+    for (;;) {
+      const { data, error } = await supabase.storage.from('fispqs').list('', {
+        limit: PAGE_SIZE,
+        offset,
+        sortBy: { column: 'name', order: 'asc' },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data?.length) break;
+
+      for (const file of data) {
+        if (file.name === '.emptyFolderPlaceholder') continue;
+        if (file.name.toLowerCase().endsWith('.pdf')) {
+          all.push(file);
+        }
+      }
+
+      if (data.length < PAGE_SIZE) break;
+      offset += PAGE_SIZE;
+    }
+
+    return all;
+  }
+
   async listPdfs(): Promise<PdfFile[]> {
     await this.ensureInitialized();
     
@@ -255,38 +288,48 @@ class PDFService {
         return downloadedPdfs;
       }
 
-      // Se online, busca a lista completa do Supabase
+      // Se online, busca a lista completa do Supabase (paginada)
       console.log('Buscando lista do Supabase...');
-      const { data: supabaseFiles, error } = await supabase.storage.from('fispqs').list();
-      
-      if (error) {
+      let supabaseFiles: Array<{ name: string; created_at?: string; metadata?: Record<string, unknown> }> = [];
+      try {
+        supabaseFiles = await this.listRemotePdfEntries();
+        console.log('PDFs remotos encontrados:', supabaseFiles.length);
+      } catch (error) {
         console.error('Erro ao listar arquivos do Supabase:', error);
         return downloadedPdfs;
       }
 
       // Mapeia todos os arquivos do Supabase
       const allPdfs = await Promise.all(
-        supabaseFiles
-          .filter(file => file.name.toLowerCase().endsWith('.pdf'))
-          .map(async (file) => {
-            const { data: { publicUrl } } = supabase.storage.from('fispqs').getPublicUrl(file.name);
-            const isDownloaded = this.downloadedFiles.has(file.name);
-            const localFile = pdfFiles.find(f => f.name === file.name);
-            const localPath = isDownloaded && localFile
-              ? (Platform.OS === 'ios' ? localFile.path : `file://${localFile.path}`)
-              : undefined;
+        supabaseFiles.map(async (file) => {
+          const { data: { publicUrl } } = supabase.storage.from('fispqs').getPublicUrl(file.name);
+          const isDownloaded = this.downloadedFiles.has(file.name);
+          const localFile = pdfFiles.find(f => f.name === file.name);
+          const localPath = isDownloaded && localFile
+            ? (Platform.OS === 'ios' ? localFile.path : `file://${localFile.path}`)
+            : undefined;
 
-            return {
-              name: file.name,
-              url: publicUrl,
-              lastModified: file.metadata?.lastModified || new Date().toISOString(),
-              isDownloaded,
-              localPath
-            };
-          })
+          const meta = file.metadata as { lastModified?: string } | undefined;
+
+          return {
+            name: file.name,
+            url: publicUrl,
+            lastModified: meta?.lastModified || file.created_at || new Date().toISOString(),
+            isDownloaded,
+            localPath,
+          };
+        }),
       );
 
-      return allPdfs;
+      // Inclui PDFs locais que ainda não existem no remoto (ex.: renomeados no dashboard)
+      const remoteNames = new Set(allPdfs.map(p => p.name));
+      for (const local of downloadedPdfs) {
+        if (!remoteNames.has(local.name)) {
+          allPdfs.push(local);
+        }
+      }
+
+      return allPdfs.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
     } catch (error) {
       console.error('Erro ao listar PDFs:', error);
       // Em caso de erro, tenta retornar os arquivos do diretório local

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "806945422985",
+    "project_id": "fds-fispqs",
+    "storage_bucket": "fds-fispqs.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:806945422985:android:8322ed400d929e76309058",
+        "android_client_info": {
+          "package_name": "com.fispqs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGRrN_gMQfZ0Vns8UtmSqaBLTERp-IX_c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

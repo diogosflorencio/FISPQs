@@ -35,10 +35,23 @@ const versions = [
     note: 'Esta versão tornará as anteriores incompatíveis devido às mudanças estruturais no banco de dados.',
   },
   {
-    version: '1.2.0 - avisos e feedbacks',
-    date: 'Abril/2026',
+    version: '1.3.0 - grupos e favoritos',
+    date: 'Junho/2026',
     badge: 'Atual',
     badgeStyle: 'current' as const,
+    changes: [
+      'Criação de grupos automáticos por tipo de contrato e tipo de documento',
+      'Lista de favoritos para acesso rápido aos documentos, usuário pode favoritar.',
+      'Agora o app notifica quando houver atualizações de estado (comentários, mural, documentos)',
+    ],
+    tech: [
+      'Persistência local de favoritos com AsyncStorage',
+      'Agrupamento por tipo de contrato (1ª parte do nome) e tipo de documento',
+    ],
+  },
+  {
+    version: '1.2.0 - avisos e feedbacks',
+    date: 'Abril/2026',
     changes: [
       'Adição de tela de feedbacks',
       'Adição de tela de avisos',
@@ -128,7 +141,7 @@ export const VersionScreen: React.FC = () => {
         <View style={styles.header}>
         
           <Text style={styles.headerTitle}>FISPQs/FDS - Meio Ambiente</Text>
-          <Text style={styles.headerSub}>Versão 1.2.0 - avisos e feedbacks</Text> 
+          <Text style={styles.headerSub}>Versão 1.3.0 - grupos e favoritos</Text> 
         </View>
 
         <Text style={styles.sectionLabel}>Versões </Text>

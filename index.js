@@ -2,14 +2,16 @@
  * @format
  */
 
-import {AppRegistry} from 'react-native';
+import { AppRegistry } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 import App from './App';
-import {name as appName} from './app.json';
+import { name as appName } from './app.json';
 import 'react-native-url-polyfill/auto';
-import { Provider as PaperProvider } from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// e passar o ícone customizado para o Paper (se necessário)
-
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  if (__DEV__) {
+    console.log('FCM em segundo plano:', remoteMessage.notification?.title);
+  }
+});
 
 AppRegistry.registerComponent(appName, () => App);

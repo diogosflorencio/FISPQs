@@ -198,7 +198,7 @@ export const TutorialScreen: React.FC = () => {
         {/* ── VERSION BADGE ── */}
         <View style={styles.versionBadge}>
           <Icon name="verified" size={14} color={APP_COLORS.textSecondary} />
-          <Text style={styles.versionText}>Versão 1.2.0 - avisos e feedbacks</Text>
+          <Text style={styles.versionText}>Versão 1.3.0 - grupos e favoritos</Text>
         </View>
 
       </ScrollView>

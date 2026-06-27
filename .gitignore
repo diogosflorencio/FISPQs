@@ -2,6 +2,11 @@
 .env
 .env.*
 
+# Firebase service account (usar só no dashboard / scripts locais)
+secrets/
+**/firebase-adminsdk*.json
+*-firebase-adminsdk-*.json
+
 # Node modules
 node_modules/
 
